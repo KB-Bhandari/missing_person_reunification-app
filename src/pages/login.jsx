@@ -1,123 +1,138 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const [userType, setUserType] = useState("volunteer"); // volunteer | family
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Login = () => {
+  const [volunteerData, setVolunteerData] = useState({ email: "", password: "" });
+  const [familyData, setFamilyData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  // Volunteer login handler
+  const handleVolunteerLogin = async (e) => {
     e.preventDefault();
-    setError("");
-
-    const apiUrl =
-      userType === "volunteer"
-        ? "http://localhost:8080/api/volunteer/login"
-        : "http://localhost:8080/api/family/login";
-
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch("http://localhost:5000/api/volunteer/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(volunteerData),
       });
 
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("name", data.name);
-        localStorage.setItem("role", userType);
-
-        // Navigate based on user type
-        navigate(userType === "volunteer" ? "/volunteerDashboard" : "/familyDashboard");
+        alert("Volunteer login successful!");
+        navigate("/volunteerDashboard");
       } else {
-        setError("Invalid credentials. Please try again.");
+        alert(data.message || "Invalid credentials");
       }
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Server error. Please try again later.");
+      console.error(err);
+      alert("Server error during volunteer login");
+    }
+  };
+
+  // Family login handler
+  const handleFamilyLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/api/family/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(familyData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Family login successful!");
+        navigate("/familyDashboard");
+      } else {
+        alert(data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error during family login");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px]">
-        <h2 className="text-2xl font-bold text-center mb-4 text-blue-700">
-          Login 
-        </h2>
-
-        {/* Toggle Buttons */}
-        <div className="flex justify-between mb-6 bg-gray-200 rounded-lg p-1">
-          <button
-            onClick={() => setUserType("volunteer")}
-            className={`w-1/2 py-2 rounded-lg font-medium ${
-              userType === "volunteer"
-                ? "bg-blue-600 text-red"
-                : "text-red-700 hover:bg-gray-700"
-            }`}
-          >
-            {/* Volunteer Login */}
-          </button>
-          <button
-            onClick={() => setUserType("family")}
-            className={`w-1/2 py-2 rounded-lg font-medium ${
-              userType === "family"
-                ? "bg-blue-600 "
-                : "text-red-700 hover:bg-gray-700"
-            }`}
-          >
-            {/* Family Login */}
-          </button>
-        </div>
-
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-center mb-3">{error}</p>}
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block text-gray-600 mb-1">Email</label>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
+        {/* Volunteer Login */}
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+          <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Volunteer Login</h2>
+          <form onSubmit={handleVolunteerLogin} className="space-y-4">
             <input
               type="email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+              value={volunteerData.email}
+              onChange={(e) => setVolunteerData({ ...volunteerData, email: e.target.value })}
               required
             />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-600 mb-1">Password</label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+              value={volunteerData.password}
+              onChange={(e) => setVolunteerData({ ...volunteerData, password: e.target.value })}
               required
             />
-          </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Login
+            </button>
+          </form>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            New Volunteer?{" "}
+            <span
+              onClick={() => navigate("/volunteerRegister")}
+              className="text-blue-600 hover:underline cursor-pointer"
+            >
+              Create Account
+            </span>
+          </p>
+        </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Login as {userType === "volunteer" ? "Volunteer" : "Family Member"}
-          </button>
-        </form>
-
-        <p className="text-center text-gray-500 text-sm mt-4">
-          Not registered yet?{" "}
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            Create Account
-          </span>
-        </p>
+        {/* Family Login */}
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+          <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Family Login</h2>
+          <form onSubmit={handleFamilyLogin} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+              value={familyData.email}
+              onChange={(e) => setFamilyData({ ...familyData, email: e.target.value })}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+              value={familyData.password}
+              onChange={(e) => setFamilyData({ ...familyData, password: e.target.value })}
+              required
+            />
+            <button
+              type="submit"
+              className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+            >
+              Login
+            </button>
+          </form>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            New Family Member?{" "}
+            <span
+              onClick={() => navigate("/family_Register")}
+              className="text-green-600 hover:underline cursor-pointer"
+            >
+              Create Account
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default Login;
