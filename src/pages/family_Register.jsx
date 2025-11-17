@@ -22,6 +22,17 @@ const FamilyRegister = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="text"
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter Email"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
 
