@@ -12,29 +12,44 @@ const LoginPage = () => {
     e.preventDefault();
     setError("");
 
-    const apiUrl =
-      userType === "volunteer"
-        ? "http://localhost:8080/api/volunteer/login"
-        : "http://localhost:8080/api/family/login";
-
     try {
-      const response = await fetch(apiUrl, {
+      // Select correct backend based on user type
+      const endpoint =
+        userType === "volunteer"
+          ? "http://localhost:5000/api/volunteer/login"
+          : "http://localhost:5000/api/persons/login"; // (Add later for family)
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password
+        }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("name", data.name);
-        localStorage.setItem("role", userType);
+      const data = await response.json();
 
-        // Navigate based on user type
-        navigate(userType === "volunteer" ? "/volunteerDashboard" : "/familyDashboard");
-      } else {
-        setError("Invalid credentials. Please try again.");
+      if (!response.ok) {
+        setError(data.message || "Invalid credentials. Please try again.");
+        return;
       }
+
+      // Save login data locally
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("name", data.name);
+      localStorage.setItem("role", userType);
+
+      // Success alert
+      alert("Login Successful!");
+
+      // Redirect based on user type
+      navigate(
+        userType === "volunteer"
+          ? "/volunteerDashboard"
+          : "/familyDashboard"
+      );
+
     } catch (err) {
       console.error("Login error:", err);
       setError("Server error. Please try again later.");
@@ -45,7 +60,7 @@ const LoginPage = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px]">
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-700">
-          Login 
+          Login
         </h2>
 
         {/* Toggle Buttons */}
@@ -54,21 +69,22 @@ const LoginPage = () => {
             onClick={() => setUserType("volunteer")}
             className={`w-1/2 py-2 rounded-lg font-medium ${
               userType === "volunteer"
-                ? "bg-blue-600 text-red"
-                : "text-red-700 hover:bg-gray-700"
+                ? "bg-blue-600 text-white"
+                : "text-gray-700 hover:bg-gray-300"
             }`}
           >
-            {/* Volunteer Login */}
+            Volunteer
           </button>
+
           <button
             onClick={() => setUserType("family")}
             className={`w-1/2 py-2 rounded-lg font-medium ${
               userType === "family"
-                ? "bg-blue-600 "
-                : "text-red-700 hover:bg-gray-700"
+                ? "bg-blue-600 text-white"
+                : "text-gray-700 hover:bg-gray-300"
             }`}
           >
-            {/* Family Login */}
+            Family
           </button>
         </div>
 
@@ -111,9 +127,21 @@ const LoginPage = () => {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           Not registered yet?{" "}
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            Create Account
-          </span>
+          {userType === "volunteer" ? (
+            <span
+              onClick={() => navigate("/volunteerRegister")}
+              className="text-blue-600 hover:underline cursor-pointer"
+            >
+              Create Volunteer Account
+            </span>
+          ) : (
+            <span
+              onClick={() => navigate("/family-register")}
+              className="text-blue-600 hover:underline cursor-pointer"
+            >
+              Create Family Member Account
+            </span>
+          )}
         </p>
       </div>
     </div>

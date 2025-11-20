@@ -1,61 +1,91 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const VolunteerRegister = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    secretCode: "",
+  });
+
+  const [msg, setMsg] = useState("");
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:5000/api/volunteer/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+      setMsg(data.message);
+
+      if (res.ok) {
+        setTimeout(() => navigate("/login"), 1500);
+      }
+    } catch (err) {
+      setMsg("Server error. Try again.");
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <div className="max-w-md mx-auto bg-white shadow-md rounded-2xl mt-10 p-8">
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
+    <div className="flex h-screen justify-center items-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-[400px] relative z-50">
+        <h2 className="text-2xl font-bold text-center text-blue-700 mb-4">
           Volunteer Registration
         </h2>
 
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Enter your full name"
-            />
-          </div>
+        {msg && <p className="text-center text-red-500 mb-3">{msg}</p>}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Enter your email"
-            />
-          </div>
+        <form onSubmit={handleSubmit}>
+          <input
+            name="name"
+            type="text"
+            className="w-full border p-2 rounded mb-3"
+            placeholder="Full Name"
+            onChange={handleChange}
+            required
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Enter your phone number"
-            />
-          </div>
+          <input
+            name="email"
+            type="email"
+            className="w-full border p-2 rounded mb-3"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Area of Availability
-            </label>
-            <input
-              type="text"
-              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="e.g., Delhi, Mumbai..."
-            />
-          </div>
+          <input
+            type="password"
+            name="password"
+            className="w-full border p-2 rounded mb-3"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            name="secretCode"
+            type="text"
+            className="w-full border p-2 rounded mb-4"
+            placeholder="Volunteer Authorization Code"
+            onChange={handleChange}
+            required
+          />
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
           >
             Register as Volunteer
           </button>
