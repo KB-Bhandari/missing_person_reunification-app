@@ -136,18 +136,20 @@ const HomePage = () => {
           Watch Relief Efforts in Action
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
-          <iframe
-            className="rounded-xl w-full h-64"
-            src="https://youtu.be/MGC2F3zNgQ8"
-            title="Landslide Hits Rescue Team During Search"
-            allowFullScreen
-          ></iframe>
-          <iframe
-            className="rounded-xl w-full h-64"
-            src="https://youtu.be/MGC2F3zNgQ8"
-            title="NDRF Rescue Operations"
-            allowFullScreen
-          ></iframe>
+         <iframe
+  className="rounded-xl w-full h-64"
+  src="https://www.youtube.com/embed/MGC2F3zNgQ8"
+  title="Landslide Hits Rescue Team During Search"
+  allowFullScreen
+></iframe>
+
+         <iframe
+  className="rounded-xl w-full h-64"
+  src="https://www.youtube.com/embed/MGC2F3zNgQ8"
+  title="Landslide Hits Rescue Team During Search"
+  allowFullScreen
+></iframe>
+
         </div>
       </section>
 

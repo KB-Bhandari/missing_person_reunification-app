@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import AboutUs from "./pages/AboutUs";
 
 import Login from "./pages/login";
 import Navbar from "./components/Navbar";
@@ -20,6 +21,7 @@ const App = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/aboutUs" element={<AboutUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/volunteerRegister" element={<VolunteerRegister />} />
           <Route path="/family_Register" element={<FamilyRegister />} />
