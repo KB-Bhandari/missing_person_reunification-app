@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const [userType, setUserType] = useState("volunteer"); // volunteer | family
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Login = () => {
+  const [volunteerData, setVolunteerData] = useState({ email: "", password: "" });
+  const [familyData, setFamilyData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  // Volunteer login handler
+  const handleVolunteerLogin = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -51,8 +50,8 @@ const LoginPage = () => {
       );
 
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Server error. Please try again later.");
+      console.error(err);
+      alert("Server error during family login");
     }
   };
 
@@ -88,31 +87,24 @@ const LoginPage = () => {
           </button>
         </div>
 
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-center mb-3">{error}</p>}
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block text-gray-600 mb-1">Email</label>
+        {/* Family Login */}
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+          <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Family Login</h2>
+          <form onSubmit={handleFamilyLogin} className="space-y-4">
             <input
               type="email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+              value={familyData.email}
+              onChange={(e) => setFamilyData({ ...familyData, email: e.target.value })}
               required
             />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-600 mb-1">Password</label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+              value={familyData.password}
+              onChange={(e) => setFamilyData({ ...familyData, password: e.target.value })}
               required
             />
           </div>
@@ -148,4 +140,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

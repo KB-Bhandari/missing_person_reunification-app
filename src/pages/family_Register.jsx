@@ -3,7 +3,7 @@ import React from "react";
 const FamilyRegister = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <div className="max-w-md mx-auto bg-white shadow-md rounded-2xl mt-10 p-8">
+      <div className="w-full max-w-3xl mx-auto bg-white shadow-md rounded-2xl mt-10 p-8">
         <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
           Family Registration
         </h2>
@@ -22,6 +22,41 @@ const FamilyRegister = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="text"
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter Email"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+
+            <input
+              type="password"
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Confirm Password
+            </label>
+
+            <input
+              type="password"
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Re-enter your password"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
               Contact Person
             </label>
             <input
@@ -29,6 +64,27 @@ const FamilyRegister = () => {
               className="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter contact person name"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Relation to Missing Person
+            </label>
+
+            <select
+              className="mt-1 w-full border border-gray-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select relation
+              </option>
+              <option value="father">Father</option>
+              <option value="mother">Mother</option>
+              <option value="brother">Brother</option>
+              <option value="sister">Sister</option>
+              <option value="guardian">Guardian</option>
+              <option value="other">Other</option>
+            </select>
           </div>
 
           <div>

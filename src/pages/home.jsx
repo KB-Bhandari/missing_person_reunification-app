@@ -3,11 +3,10 @@ import React from "react";
 const HomePage = () => {
   return (
     <div className="bg-gray-50 min-h-screen text-gray-800">
-      {/* Hero Section */}
-      <section className="relative bg-gray-900 text-white">
-        <img
-          src="https://images.unsplash.com/photo-1606226121384-8cbbf0b4c8ef?auto=format&fit=crop&w=1500&q=80"
-          alt="Disaster Relief"
+    {/* /* Hero Section */ }
+        <section className="relative bg-gray-900 text-white">
+          <img src="https://img.freepik.com/free-vector/rescuer-background-with-accident-safety-symbols-flat-vector-illustration_1284-81632.jpg"
+          alt="A disaster relief scene showing rescuers in action, working diligently to assist individuals affected by a disaster. The background is blurred to emphasize the rescuers, creating a sense of urgency and compassion. The text overlay reads: Our Mission: Reconnecting Families, conveying a message of hope and support."
           className="absolute inset-0 w-full h-full object-cover opacity-40"
         />
         <div className="relative z-10 text-center py-24 px-6">
@@ -22,9 +21,9 @@ const HomePage = () => {
             Report a Missing Person
           </button>
         </div>
-      </section>
+          </section>
 
-      {/* Who We Are */}
+          {/* Who We Are */}
       <section className="py-16 px-6 md:px-20 grid md:grid-cols-2 gap-10">
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-2xl font-semibold mb-3 text-blue-700">
@@ -139,13 +138,13 @@ const HomePage = () => {
         <div className="grid md:grid-cols-2 gap-8">
           <iframe
             className="rounded-xl w-full h-64"
-            src="https://www.youtube.com/embed/1lB2BlzM0os"
-            title="Flood Relief Efforts"
+            src="https://youtu.be/MGC2F3zNgQ8"
+            title="Landslide Hits Rescue Team During Search"
             allowFullScreen
           ></iframe>
           <iframe
             className="rounded-xl w-full h-64"
-            src="https://www.youtube.com/embed/AcZ9xZB1V1E"
+            src="https://youtu.be/MGC2F3zNgQ8"
             title="NDRF Rescue Operations"
             allowFullScreen
           ></iframe>
@@ -160,10 +159,10 @@ const HomePage = () => {
         <p>📧 Email: <b>help@ndrf.gov.in</b> | <b>missinghelp@india.gov.in</b></p>
       </section>
 
-      {/* Footer
+      {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 text-center py-6">
         <p>© 2025 Missing Person Reunification Project | Designed with ❤️ by KhojSetu Team</p>
-      </footer> */}
+      </footer>
     </div>
   );
 };

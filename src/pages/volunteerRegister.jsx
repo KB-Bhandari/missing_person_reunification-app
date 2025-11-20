@@ -44,6 +44,7 @@ const VolunteerRegister = () => {
           Volunteer Registration
         </h2>
 
+
         {msg && <p className="text-center text-red-500 mb-3">{msg}</p>}
 
         <form onSubmit={handleSubmit}>
