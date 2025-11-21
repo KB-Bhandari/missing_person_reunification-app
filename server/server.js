@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import personRoutes from "./routes/personRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import campRoutes from "./routes/campRoutes.js";
+import familyRoutes from "./routes/familyRoutes.js"
 import volunteerRoutes from "./routes/volunteerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
@@ -35,6 +36,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/volunteer", volunteerRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/family", familyRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000;
