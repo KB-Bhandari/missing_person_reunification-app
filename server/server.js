@@ -34,6 +34,7 @@ app.use("/api/persons", personRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/volunteer", volunteerRoutes);
+app.use("/api/family", familyRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Start server
