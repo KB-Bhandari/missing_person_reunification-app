@@ -163,7 +163,7 @@ const Login = () => {
               Create Volunteer Account
             </span>
           ) : (
-            <span onClick={() => navigate("/family-register")} className="text-blue-600 hover:underline cursor-pointer">
+            <span onClick={() => navigate("/family_register")} className="text-blue-600 hover:underline cursor-pointer">
               Create Family Member Account
             </span>
           )}
