@@ -15,6 +15,7 @@
     "chart.js": "^4.5.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "mongoose": "^8.19.4",
