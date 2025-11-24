@@ -5,7 +5,8 @@ import express from "express";
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-// POST - Register a person
+
+// ✅ 1) REGISTER PERSON (Volunteer Panel)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     console.log("📥 Received Data:", req.body);
@@ -28,7 +29,8 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
-// 👇 ADD THIS (GET route)
+
+// ✅ 2) GET ALL PERSONS
 router.get("/", async (req, res) => {
   try {
     const persons = await Person.find();
@@ -38,5 +40,41 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+// ✅ 3) SEARCH PERSON (Family Search)
+router.get("/search", async (req, res) => {
+  try {
+    const nameQuery = req.query.name?.toLowerCase();
+
+    if (!nameQuery) {
+      return res.status(400).json({ message: "Name is required." });
+    }
+
+    const persons = await Person.find();
+
+    // SIMPLE NAME MATCHING (contains / partial matching)
+    const matched = persons.filter((p) =>
+      p.name.toLowerCase().includes(nameQuery)
+    );
+
+    if (matched.length > 0) {
+      return res.json({
+        matchFound: true,
+        matchedPersons: matched,
+      });
+    }
+
+    // NO MATCH FOUND
+    return res.json({
+      matchFound: false,
+      matchedPersons: [],
+    });
+  } catch (error) {
+    console.error("❌ Error searching person:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 export default router;

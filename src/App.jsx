@@ -11,6 +11,8 @@ import HomePage from "./pages/home.jsx";
 import VolunteerRegister from "./pages/volunteerRegister";
 
 import FamilyRegister from "./pages/family_Register.jsx";
+import MissingPersonInfo from "./pages/missingPersonInfo";
+
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
           {/* 🔥 Missing Routes Added */}
           <Route path="/volunteer-register" element={<VolunteerRegister />} />
           <Route path="/family-register" element={<FamilyRegister />} />
+          <Route path="/missing-info" element={<MissingPersonInfo />} />
+
 
         </Routes>
       </main>

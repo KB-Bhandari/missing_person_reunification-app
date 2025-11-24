@@ -9,6 +9,9 @@ import familyRoutes from "./routes/familyRoutes.js"
 import volunteerRoutes from "./routes/volunteerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
+import familySearchRoutes from "./routes/familySearchRoutes.js";
+
+
 dotenv.config();
 
 const app = express();               // <-- create app before using it
@@ -37,6 +40,7 @@ app.use("/api/camps", campRoutes);
 app.use("/api/volunteer", volunteerRoutes);
 app.use("/api/family", familyRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/search", familySearchRoutes);
 
 
 // Start server
