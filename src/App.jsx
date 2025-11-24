@@ -12,7 +12,7 @@ import New_Person_Registration from "./pages/RegisterPersonForm";
 import HomePage from "./pages/home.jsx";
 import AdminVolunteerApproval from "./pages/AdminVolunteerApproval";
 import AdminApprove from "./pages/AdminApprove";
-
+import Contact from "./pages/contact.jsx";
 const App = () => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -26,6 +26,7 @@ const App = () => {
           <Route path="/volunteerRegister" element={<VolunteerRegister />} />
           <Route path="/family_Register" element={<FamilyRegister />} />
           <Route path="/volunteerDashboard" element={<VolunteerDashboard />} />
+          <Route path="/contact" element={<Contact />} />
           <Route
             path="/newPerson_Registration"
             element={<New_Person_Registration />}
