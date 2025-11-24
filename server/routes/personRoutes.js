@@ -1,23 +1,21 @@
-import multer from "multer";
-import Person from "../models/personModels.js";
 import express from "express";
+import Person from "../models/personModels.js";
+import { upload } from "../middleware/upload.js";  // use middleware only
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+
 
 // POST - Register a person
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    console.log("📥 Received Data:", req.body);
-    console.log("📸 Image:", req.file);
-
     const newPerson = new Person({
       name: req.body.name,
       age: req.body.age,
       gender: req.body.gender,
       location: req.body.location,
       description: req.body.description,
-      image: req.file ? req.file.buffer : undefined,
+      image: req.file ? req.file.filename : null,
+
     });
 
     await newPerson.save();
@@ -28,14 +26,38 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
-// 👇 ADD THIS (GET route)
+
+// GET all persons
 router.get("/", async (req, res) => {
   try {
     const persons = await Person.find();
-    res.status(200).json(persons);
+
+    const formatted = persons.map((p) => ({
+      ...p._doc,
+      image: p.image || null,
+    }));
+
+    res.status(200).json(formatted);
   } catch (error) {
     console.error("❌ Error fetching persons:", error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+
+// DELETE - Remove person
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Person.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Person not found" });
+    }
+
+    res.status(200).json({ message: "Person deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting person:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

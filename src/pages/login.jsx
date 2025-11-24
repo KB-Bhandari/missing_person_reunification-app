@@ -14,39 +14,42 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Volunteer login handler
-  const handleVolunteerLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+const handleVolunteerLogin = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const endpoint = "http://localhost:5000/api/volunteer/login";
+  try {
+    const endpoint = "http://localhost:5000/api/volunteer/login";
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: volunteerData.email,
-          password: volunteerData.password,
-        }),
-      });
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: volunteerData.email,
+        password: volunteerData.password,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        setError(data.message || "Invalid credentials. Please try again.");
-        return;
-      }
-
-      localStorage.setItem("token", data.token || "");
-      localStorage.setItem("name", data.name || "");
-      localStorage.setItem("role", "volunteer");
-
-      navigate("/volunteerDashboard");
-    } catch (err) {
-      console.error(err);
-      setError("Server error during volunteer login");
+    if (!response.ok) {
+      setError(data.message || "Invalid credentials. Please try again.");
+      return;
     }
-  };
+
+    // ✅ SAVE VOLUNTEER INFO HERE
+    localStorage.setItem("token", data.token || "");
+    localStorage.setItem("volunteerName", data.name || "");
+    localStorage.setItem("volunteerEmail", data.email || "");
+    localStorage.setItem("role", "volunteer");
+
+    // Redirect
+    navigate("/volunteerDashboard");
+  } catch (err) {
+    console.error(err);
+    setError("Server error during volunteer login");
+  }
+};
 
   // Family login handler
   const handleFamilyLogin = async (e) => {
