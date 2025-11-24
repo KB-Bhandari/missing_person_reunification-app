@@ -4,6 +4,8 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Login from "./pages/login";
+import AboutUs from "./pages/aboutUs.jsx"
+import Contact from "./pages/contact.jsx"
 import VolunteerDashboard from "./pages/volunteerDashboard";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import HomePage from "./pages/home.jsx";
@@ -19,6 +21,8 @@ const App = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="aboutUs" element={<AboutUs/>}/>
+          <Route path="contact" element = {<Contact/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
           <Route path="/family-dashboard" element={<FamilyDashboard />} />
