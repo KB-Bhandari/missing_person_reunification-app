@@ -4,15 +4,29 @@ import Camp from "../models/campModel.js";
 const router = express.Router();
 
 // ➕ Add new camp
-router.post("/register", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const camp = new Camp(req.body);
-    await camp.save();
-    res.status(201).json({ message: "Camp added successfully", camp });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to add camp", error: error.message });
+    const { leaderName, campName, latitude, longitude, capacity } = req.body;
+
+    console.log("Received data:", req.body); // <-- See what frontend sends
+
+    const newCamp = new Camp({
+      leaderName,
+      campName,
+      latitude,
+      longitude,
+      capacity,
+    });
+
+    await newCamp.save();
+
+    res.status(201).json({ message: "Camp added successfully", newCamp });
+  } catch (err) {
+    console.error("Error adding camp:", err);
+    res.status(500).json({ message: "Server error", error: err });
   }
 });
+
 
 // 📋 Get all camps
 router.get("/", async (req, res) => {

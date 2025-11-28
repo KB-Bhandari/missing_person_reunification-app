@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import { MdLeaderboard } from "react-icons/md";
 
 const campSchema = new mongoose.Schema({
+  leaderName: { type: String, required: true },
   campName: { type: String, required: true },
   location: { type: String, required: true },
   latitude: { type: Number, required: true },

@@ -1,10 +1,26 @@
 import express from "express";
 import Person from "../models/personModels.js";
-import { upload } from "../middleware/upload.js";  // use middleware only
+import { upload } from "../middleware/upload.js"; // use middleware only
 
 const router = express.Router();
 
 
+// 👇 ADD THIS (GET route)
+router.get("/", async (req, res) => {
+  try {
+    const persons = await Person.find(); // exclude image buffer for listing
+
+   
+    const formatted = persons.map((p) => ({
+      ...p._doc,
+      image: p.image ? `/uploads/${p.image}` : null,   // FIXED
+    }));
+    res.status(200).json(formatted);
+  } catch (error) {
+    console.error("❌ Error fetching persons:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // ✅ 1) REGISTER PERSON (Volunteer Panel)
 router.post("/", upload.single("image"), async (req, res) => {
@@ -15,34 +31,20 @@ router.post("/", upload.single("image"), async (req, res) => {
       gender: req.body.gender,
       location: req.body.location,
       description: req.body.description,
-      image: req.file ? req.file.filename : null,
-
+      image: req.file?.filename,   // VERY IMPORTANT
+      status: req.body.status || "missing",
     });
 
     await newPerson.save();
     res.status(201).json({ message: "Person registered successfully!" });
   } catch (error) {
-    console.error("❌ Error registering person:", error);
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
 
-// 👇 ADD THIS (GET route)
-router.get("/", async (req, res) => {
-  try {
-    const persons = await Person.find();
 
-    const formatted = persons.map((p) => ({
-      ...p._doc,
-      image: p.image || null,
-    }));
 
-    res.status(200).json(formatted);
-  } catch (error) {
-    console.error("❌ Error fetching persons:", error);
-    res.status(500).json({ message: error.message });
-  }
-});
 
 
 // DELETE - Remove person

@@ -1,5 +1,6 @@
 import FamilySearch from "../models/FamilySearch.js";
-import VolunteerPerson from "../models/VolunteerPerson.js"; // missing persons by volunteers
+import Person from "../models/personModels.js";
+ // missing persons by volunteers
 
 // Basic similarity function (name + location)
 function isMatch(family, volunteer) {

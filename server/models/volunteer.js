@@ -7,8 +7,14 @@ const volunteerSchema = new mongoose.Schema({
   phone: String,
   role: String,
   assignedCamp: String,
-  status: { type: String, default: "active" }
+  status: { type: String, default: "active" },
 // pending | active | rejected
+
+ createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Volunteer"
+  }, // kis volunteer ne upload kiya
+  createdAt: { type: Date, default: Date.now }
 });
 
 // Prevent OverwriteModelError

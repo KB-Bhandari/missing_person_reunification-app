@@ -367,10 +367,8 @@ const CaseManagement = ({ persons, fetchDashboardData }) => {
             {persons.map((p) => (
               <tr key={p._id} className="border-b border-gray-200 hover:bg-gray-100 transition">
                 <td className="py-2 px-4">
-                  <img src={p.image? `${BASE_URL.replace("/api", "")}/${p.image}`
-    : "https://via.placeholder.com/60x60?text=No+Image"
-}
-
+                    <img
+  src={`http://localhost:5000${p.image}`}
   alt={p.name}
   className="w-14 h-14 rounded-lg object-cover border border-gray-300"
 />
@@ -434,10 +432,15 @@ const SearchSection = ({ persons }) => {
 
       {filtered?.length ? (
         <div className="grid md:grid-cols-3 gap-6">
-          {filtered.map((p) => (
-            <div key={p._id} className="bg-gray-100 border border-gray-300 rounded-xl shadow-sm p-4">
-                 <img src={`${BASE_URL.replace("/api", "")}/${p.image}`} className="w-full h-40 object-cover rounded-lg mb-3" />
-              <h3 className="text-lg font-semibold text-blue-700 mb-1">{p.name}</h3>
+      {filtered.map((p) => (
+  <div key={p._id} className="bg-gray-100 border border-gray-300 rounded-xl shadow-sm p-4">
+    <img
+  src={`http://localhost:5000${p.image}`}
+  alt={p.name}
+  className="w-full h-48 object-cover rounded-lg mb-3"
+/>
+
+<h3 className="text-lg font-semibold text-blue-700 mb-1">{p.name}</h3>
               <p className="text-gray-700 text-sm"><b>Age:</b> {p.age ?? "—"}</p>
               <p className="text-gray-700 text-sm"><b>Status:</b> <span className={p.status === "missing" ? "text-red-600" : "text-green-600"}>{p.status}</span></p>
               <p className="text-gray-700 text-sm"><b>Location:</b> {p.location ?? "—"}</p>
@@ -568,6 +571,7 @@ const SettingsSection = ({ user }) => {
 const CampManagement = ({ camps, fetchDashboardData }) => {
   const [loading, setLoading] = useState(false);
   const [newCamp, setNewCamp] = useState({
+    leaderName: "",
     campName: "",
     latitude: "",
     longitude: "",
@@ -591,8 +595,8 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
   };
 
   const handleAddCamp = async () => {
-    const { campName, latitude, longitude, capacity } = newCamp;
-    if (!campName || !latitude || !longitude || !capacity) return alert("Please fill all fields");
+    const { campName, latitude, longitude, capacity, leaderName } = newCamp;
+    if (!leaderName || !campName || !latitude || !longitude || !capacity) return alert("Please fill all fields");
 
     try {
       setLoading(true);
@@ -601,6 +605,7 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           campName,
+            leaderName: newCamp.leaderName,
           latitude: parseFloat(latitude),
           longitude: parseFloat(longitude),
           capacity: parseInt(capacity),
@@ -608,7 +613,8 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
       });
       if (!res.ok) throw new Error("Failed to add camp");
       alert("Camp added successfully!");
-      setNewCamp({ campName: "", latitude: "", longitude: "", capacity: "" });
+     setNewCamp({ campName: "", latitude: "", longitude: "", capacity: "", leaderName: "" });
+
       await fetchDashboardData();
     } catch (err) {
       console.error(err);
@@ -624,6 +630,14 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
 
       {/* Add New Camp */}
       <div className="grid md:grid-cols-4 gap-3">
+        <input
+  type="text"
+  placeholder="Leader Name"
+  value={newCamp.leaderName}
+  onChange={(e) => setNewCamp({ ...newCamp, leaderName: e.target.value })}
+  className="border rounded-lg px-3 py-2 w-full"
+/>
+
         <input
           type="text"
           placeholder="Camp Name"
@@ -668,6 +682,7 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
         <table className="min-w-full border border-gray-300 rounded-lg text-sm mt-4">
           <thead className="bg-blue-600 text-white">
             <tr>
+              <th className="py-3 px-4 text-left">Leader Name</th>
               <th className="py-3 px-4 text-left">Camp Name</th>
               <th className="py-3 px-4 text-left">Latitude</th>
               <th className="py-3 px-4 text-left">Longitude</th>
@@ -678,7 +693,8 @@ const CampManagement = ({ camps, fetchDashboardData }) => {
           <tbody className="bg-gray-50 text-gray-800">
             {camps.map((c) => (
               <tr key={c._id} className="border-b border-gray-200 hover:bg-gray-100 transition">
-                <td className="py-2 px-4 font-medium">{c.campName}</td>
+                <td className="py-2 px-4">{c.leaderName}</td>
+               <td className="py-2 px-4 font-medium">{c.campName}</td>
                 <td className="py-2 px-4">{c.latitude}</td>
                 <td className="py-2 px-4">{c.longitude}</td>
                 <td className="py-2 px-4">{c.capacity}</td>

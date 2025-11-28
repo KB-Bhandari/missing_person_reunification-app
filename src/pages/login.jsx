@@ -41,6 +41,8 @@ const handleVolunteerLogin = async (e) => {
     localStorage.setItem("volunteerEmail", data.email || "");
     localStorage.setItem("role", "volunteer");
 
+window.dispatchEvent(new Event("auth-change"));
+
     // Redirect
     navigate("/volunteerDashboard");
   } catch (err) {
