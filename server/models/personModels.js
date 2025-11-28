@@ -6,10 +6,8 @@ const personSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   location: { type: String, required: true },
   description: { type: String },
-  image: { type: String },
-  status: { type: String, enum: ["missing", "found"], default: "missing" },
-  latitude: { type: Number },
-  longitude: { type: Number }
+  image: { type: Buffer }, // stored as buffer
+  status: { type: String, enum: ["missing", "found"], default: "missing" }
 });
 
 export default mongoose.model("Person", personSchema);

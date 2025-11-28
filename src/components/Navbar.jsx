@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import VolunteerDashboard from "../pages/volunteerDashboard.jsx";
+import FamilyDashboard from "../pages/FamilyDashboard.jsx"
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,7 +85,7 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/volunteerDashboard"
+              to="/aboutUs"
               onClick={() => setMenuOpen(false)}
               className="hover:text-blue-600 transition-colors"
             >

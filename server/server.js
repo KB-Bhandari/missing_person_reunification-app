@@ -7,8 +7,11 @@ import { fileURLToPath } from "url";
 import personRoutes from "./routes/personRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import campRoutes from "./routes/campRoutes.js";
+import familyRoutes from "./routes/familyRoutes.js"
 import volunteerRoutes from "./routes/volunteerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+
+import familySearchRoutes from "./routes/familySearchRoutes.js";
 
 
 dotenv.config();
@@ -39,7 +42,10 @@ app.use("/api/persons", personRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/volunteer", volunteerRoutes);
+app.use("/api/family", familyRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/search", familySearchRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

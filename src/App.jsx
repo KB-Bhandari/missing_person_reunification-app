@@ -1,42 +1,39 @@
+// src/App.jsx
+
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import AboutUs from "./pages/AboutUs";
-
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
 import Login from "./pages/login";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import VolunteerRegister from "./pages/volunteerRegister";
-import FamilyRegister from "./pages/family_Register";
+import AboutUs from "./pages/aboutUs.jsx"
+import Contact from "./pages/contact.jsx"
 import VolunteerDashboard from "./pages/volunteerDashboard";
-import New_Person_Registration from "./pages/RegisterPersonForm";
+import FamilyDashboard from "./pages/FamilyDashboard";
 import HomePage from "./pages/home.jsx";
-import AdminVolunteerApproval from "./pages/AdminVolunteerApproval";
-import AdminApprove from "./pages/AdminApprove";
+import VolunteerRegister from "./pages/volunteerRegister";
+
+import FamilyRegister from "./pages/family_Register.jsx";
+import MissingPersonInfo from "./pages/missingPersonInfo";
 import Contact from "./pages/contact.jsx";
 const App = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/aboutUs" element={<AboutUs />} />
+          <Route path="aboutUs" element={<AboutUs/>}/>
+          <Route path="contact" element = {<Contact/>}/>
           <Route path="/login" element={<Login />} />
-          <Route path="/volunteerRegister" element={<VolunteerRegister />} />
-          <Route path="/family_Register" element={<FamilyRegister />} />
-          <Route path="/volunteerDashboard" element={<VolunteerDashboard />} />
+          <Route path="/volunteer-dashboard" element={<VolunteerDashboard />} />
+          <Route path="/family-dashboard" element={<FamilyDashboard />} />
+          {/* 🔥 Missing Routes Added */}
           <Route path="/contact" element={<Contact />} />
-          <Route
-            path="/newPerson_Registration"
-            element={<New_Person_Registration />}
-          />
-          <Route path="/admin/volunteers" element={<AdminVolunteerApproval />} />
-          <Route path="/admin-panel" element={<AdminApprove />} />
-
+          <Route path="/volunteer-register" element={<VolunteerRegister />} />
+          <Route path="/family-register" element={<FamilyRegister />} />
+          <Route path="/missing-info" element={<MissingPersonInfo />} />
         </Routes>
       </main>
-
       <Footer />
     </div>
   );

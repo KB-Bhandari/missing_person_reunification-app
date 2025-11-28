@@ -5,7 +5,8 @@ import { upload } from "../middleware/upload.js";  // use middleware only
 const router = express.Router();
 
 
-// POST - Register a person
+
+// ✅ 1) REGISTER PERSON (Volunteer Panel)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const newPerson = new Person({
@@ -26,8 +27,7 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
-
-// GET all persons
+// 👇 ADD THIS (GET route)
 router.get("/", async (req, res) => {
   try {
     const persons = await Person.find();
@@ -60,5 +60,41 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+// ✅ 3) SEARCH PERSON (Family Search)
+router.get("/search", async (req, res) => {
+  try {
+    const nameQuery = req.query.name?.toLowerCase();
+
+    if (!nameQuery) {
+      return res.status(400).json({ message: "Name is required." });
+    }
+
+    const persons = await Person.find();
+
+    // SIMPLE NAME MATCHING (contains / partial matching)
+    const matched = persons.filter((p) =>
+      p.name.toLowerCase().includes(nameQuery)
+    );
+
+    if (matched.length > 0) {
+      return res.json({
+        matchFound: true,
+        matchedPersons: matched,
+      });
+    }
+
+    // NO MATCH FOUND
+    return res.json({
+      matchFound: false,
+      matchedPersons: [],
+    });
+  } catch (error) {
+    console.error("❌ Error searching person:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 export default router;
