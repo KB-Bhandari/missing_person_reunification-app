@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 const HomePage = () => {
   return (
     <div className="bg-gray-50 min-h-screen text-gray-800">
@@ -17,9 +17,11 @@ const HomePage = () => {
             Leveraging Technology with Empathy to reunite missing persons and
             bring hope during disasters.
           </p>
-          <button className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
-            Report a Missing Person
-          </button>
+         <Link to="/family-register">
+  <button className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+    Report a Missing Person
+  </button>
+</Link>
         </div>
           </section>
 

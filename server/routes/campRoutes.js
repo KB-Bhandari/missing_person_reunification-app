@@ -37,5 +37,22 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch camps", error: error.message });
   }
 });
+// 🗑️ Delete a camp by ID
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedCamp = await Camp.findByIdAndDelete(id);
+
+    if (!deletedCamp) {
+      return res.status(404).json({ message: "Camp not found" });
+    }
+
+    res.status(200).json({ message: "Camp deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete camp", error: error.message });
+  }
+});
+
 
 export default router;
