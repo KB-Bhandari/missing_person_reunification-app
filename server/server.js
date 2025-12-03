@@ -12,6 +12,7 @@ import volunteerRoutes from "./routes/volunteerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 import familySearchRoutes from "./routes/familySearchRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 
 dotenv.config();
@@ -45,6 +46,7 @@ app.use("/api/volunteer", volunteerRoutes);
 app.use("/api/family", familyRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/search", familySearchRoutes);
+app.use("/api",contactRoutes);
 
 
 // Start server

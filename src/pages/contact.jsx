@@ -14,10 +14,22 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     console.log("Form Submitted:", formData);
+
+    // 👇 fetch call!
+    await fetch("http://localhost:5000/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    // After submission
     setSubmitted(true);
+
+    // Reset form
     setFormData({ name: "", email: "", message: "" });
   };
 
@@ -28,7 +40,7 @@ const Contact = () => {
           Contact Us
         </h1>
         <p className="text-gray-600 mb-8 text-center">
-          Have any questions, feedback, or suggestions?  
+          Have any questions, feedback, or suggestions?
           We’d love to hear from you.
         </p>
 
@@ -110,14 +122,16 @@ const Contact = () => {
 
       {/* Contact Info */}
       <div className="mt-10 text-center text-gray-600">
+        <p>📍 Location: Dehradun, Uttarakhand, India</p>
         <p>
-          📍 Location: Dehradun, Uttarakhand, India
+          📞 Helpline:{" "}
+          <span className="text-blue-600 font-medium">+91 98765 43210</span>
         </p>
         <p>
-          📞 Helpline: <span className="text-blue-600 font-medium">+91 98765 43210</span>
-        </p>
-        <p>
-          ✉️ Email: <span className="text-blue-600 font-medium">support@khojsetu.org</span>
+          ✉️ Email:{" "}
+          <span className="text-blue-600 font-medium">
+            support@khojsetu.org
+          </span>
         </p>
       </div>
     </div>
