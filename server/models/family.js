@@ -9,5 +9,4 @@ const familySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export default mongoose.model("Family", familySchema);
+export default mongoose.models.Family || mongoose.model("Family", familySchema);

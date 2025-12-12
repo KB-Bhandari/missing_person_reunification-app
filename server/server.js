@@ -1,7 +1,8 @@
+// server.js
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -26,6 +27,7 @@ app.use(express.json());
 
 // STATIC UPLOADS PATH — IMPORTANT
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads/foundPersons", express.static(path.join(__dirname, "uploads/foundPersons")));
 
 // CONNECT TO MONGO
 mongoose

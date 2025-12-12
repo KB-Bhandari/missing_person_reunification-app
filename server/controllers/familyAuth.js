@@ -1,4 +1,4 @@
-import Family from "../models/Family.js";
+import Family from "../models/family.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

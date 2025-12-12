@@ -10,6 +10,9 @@ const campSchema = new mongoose.Schema({
   occupied: { type: Number, default: 0 },
   contactPerson: { type: String },
   phone: { type: String },
+  volunteersAssigned: [
+  { type: mongoose.Schema.Types.ObjectId, ref: "Volunteer" },
+]
 });
 
 export default mongoose.model("Camp", campSchema);

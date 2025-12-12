@@ -17,6 +17,15 @@ import {
   Filler,
 } from "chart.js";
 import { BASE_URL } from "/src/config/api.config";
+const IMAGE_BASE_URL = "http://localhost:5000/uploads/foundPersons";
+
+const getImageUrl = (filename) => {
+  if (!filename) return 'https://via.placeholder.com/300x200?text=No+Image';
+  
+  const cleanFilename = filename.replace(/^\/uploads\/foundPersons\//, '').replace(/^\/uploads\//, '');
+  
+  return `${IMAGE_BASE_URL}/${cleanFilename}`;
+};
 
 ChartJS.register(
   LineElement,
@@ -179,7 +188,7 @@ const VolunteerDashboard = ({ user }) => {
           <h1 className="text-2xl font-extrabold text-blue-700">Volunteer Dashboard</h1>
           <div className="flex items-center gap-4">
             <span className="font-semibold text-gray-700">
-  {volunteerName}
+          {volunteerName}
 </span>
 
             <button
@@ -367,11 +376,16 @@ const CaseManagement = ({ persons, fetchDashboardData }) => {
             {persons.map((p) => (
               <tr key={p._id} className="border-b border-gray-200 hover:bg-gray-100 transition">
                 <td className="py-2 px-4">
-                    <img
-  src={`http://localhost:5000${p.image}`}
+                   <img
+  src={getImageUrl(p.image)}
   alt={p.name}
   className="w-14 h-14 rounded-lg object-cover border border-gray-300"
+  onError={(e) => {
+    console.error('❌ Image failed to load:', p.image);
+    e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+  }}
 />
+
 
                 </td>
                 <td className="py-2 px-4 font-medium">{p.name}</td>
@@ -434,11 +448,16 @@ const SearchSection = ({ persons }) => {
         <div className="grid md:grid-cols-3 gap-6">
       {filtered.map((p) => (
   <div key={p._id} className="bg-gray-100 border border-gray-300 rounded-xl shadow-sm p-4">
-    <img
-  src={`http://localhost:5000${p.image}`}
+   <img
+  src={getImageUrl(p.image)}
   alt={p.name}
   className="w-full h-48 object-cover rounded-lg mb-3"
+  onError={(e) => {
+    console.error('❌ Image failed to load:', p.image);
+    e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+  }}
 />
+
 
 <h3 className="text-lg font-semibold text-blue-700 mb-1">{p.name}</h3>
               <p className="text-gray-700 text-sm"><b>Age:</b> {p.age ?? "—"}</p>

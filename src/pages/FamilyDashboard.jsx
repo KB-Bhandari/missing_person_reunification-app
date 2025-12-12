@@ -3,13 +3,14 @@ import axios from "axios";
 
 const FamilyDashboard = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    approxAge: "",
-    additionalDetails: "",
-    lastSeenLocation: "",
-    dateLastSeen: "",
-    photo: null,
-  });
+  fullName: "",
+  approximateAge: "",
+  lastSeenLocation: "",
+  dateLastSeen: "",
+  photo: null,
+  description: "", // added description
+});
+
 
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -108,60 +109,56 @@ const FamilyDashboard = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
 
-      <section className="bg-blue-600 text-white py-16 text-center">
-        <h1 className="text-3xl font-extrabold">Family Dashboard</h1>
-        <p className="text-lg mt-2">Search our database of registered missing persons.</p>
-      </section>
+      {/* Hero Section */}
+   {/* Hero Section */}
+<section
+  className="relative bg-cover bg-center text-white py-24"
+  style={{ 
+    backgroundImage: `url('https://images.unsplash.com/photo-1606788075761-7e3f146a16c7?auto=format&fit=crop&w=1470&q=80')` 
+  }}
+>
+  <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+  <div className="relative z-10 text-center max-w-4xl mx-auto">
+    <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+      Reconnect with Your Loved Ones
+    </h1>
+    <p className="text-lg md:text-xl mb-6">
+      Search our database of missing persons and bring hope back to your family.
+    </p>
+    <button
+      onClick={() => window.scrollTo({ top: 600, behavior: "smooth" })}
+      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
+    >
+      Start Searching
+    </button>
+  </div>
+</section>
 
-      <section className="flex flex-col max-w-7xl mx-auto px-4 mt-10">
 
-        {/* FORM */}
-        <div className="p-6 bg-white rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Submit Details</h2>
+      {/* Search Section */}
+      <section className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto px-4 mt-10">
 
-          {errorMsg && <p className="text-red-600 mb-2">{errorMsg}</p>}
-          {successMsg && <p className="text-green-600 mb-2">{successMsg}</p>}
-
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Full Name"
-            className="w-full mb-3 p-2 border rounded-lg"
-          />
-
-          <input
-            name="approxAge"
-            value={formData.approxAge}
-            onChange={handleChange}
-            placeholder="Approximate Age"
-            className="w-full mb-3 p-2 border rounded-lg"
-          />
-
+        {/* Search by Details */}
+        <div className="flex-1 p-6 bg-white rounded-xl shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Search by Details</h2>
+          <input name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" className="w-full mb-3 p-2 border rounded-lg" />
+          <input name="approximateAge" value={formData.approximateAge} onChange={handleChange} placeholder="Approx. Age" className="w-full mb-3 p-2 border rounded-lg" />
+          <input name="lastSeenLocation" value={formData.lastSeenLocation} onChange={handleChange} placeholder="Last Seen Location" className="w-full mb-3 p-2 border rounded-lg" />
+          <input type="date" name="dateLastSeen" value={formData.dateLastSeen} onChange={handleChange} className="w-full mb-3 p-2 border rounded-lg" />
           <textarea
-            name="additionalDetails"
-            value={formData.additionalDetails}
-            onChange={handleChange}
-            placeholder="Additional Details"
-            className="w-full mb-3 p-2 border rounded-lg h-24"
-          />
+  name="description"
+  value={formData.description || ""}
+  onChange={handleChange}
+  placeholder="Description (clothes, marks, etc.)"
+  className="w-full mb-3 p-2 border rounded-lg resize-none h-24"
+></textarea>
 
-          <input
-            name="lastSeenLocation"
-            value={formData.lastSeenLocation}
-            onChange={handleChange}
-            placeholder="Last Seen Location"
-            className="w-full mb-3 p-2 border rounded-lg"
-          />
+          <button onClick={handleSearchDetails} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mt-2">Search by Details</button>
+        </div>
 
-          <input
-            type="date"
-            name="dateLastSeen"
-            value={formData.dateLastSeen}
-            onChange={handleChange}
-            className="w-full mb-3 p-2 border rounded-lg"
-          />
-
+        {/* Search by Photo */}
+        <div className="flex-1 p-6 bg-white rounded-xl shadow-md text-center">
+          <h2 className="text-xl font-semibold mb-4">Search by Photo</h2>
           <div className="w-full h-64 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center mb-4 relative cursor-pointer">
             <input
               type="file"
