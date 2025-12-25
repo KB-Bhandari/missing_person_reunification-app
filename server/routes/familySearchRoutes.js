@@ -1,8 +1,12 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
+import { requireFamily } from "../middleware/authMiddleware.js";
 import { fileURLToPath } from "url";
-import { saveFamilySearch } from "../controllers/familySearchController.js";
+import {
+  saveFamilySearch,
+  getMyFamilySearches,
+} from "../controllers/familySearchController.js";
 
 const router = express.Router();
 
@@ -22,6 +26,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/save", upload.single("photo"), saveFamilySearch);
+router.post("/save",   requireFamily,  upload.single("photo"), saveFamilySearch);
+
+router.get("/my",  requireFamily, getMyFamilySearches);
 
 export default router;

@@ -1,5 +1,5 @@
 import express from "express";
-import Person from "../models/personModels.js";
+import FoundPerson from "../models/FoundPerson.js";
 import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
@@ -7,7 +7,7 @@ const router = express.Router();
 // GET all persons
 router.get("/", async (req, res) => {
   try {
-    const persons = await Person.find().sort({ createdAt: -1 });
+    const persons = await FoundPerson.find().sort({ createdAt: -1 });
 
     // ✅ IMPORTANT: Return ONLY the filename, not full path
     // The frontend will construct the full URL
@@ -30,7 +30,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     console.log("📁 Uploaded file:", req.file);
     console.log("📝 Request body:", req.body);
 
-    const newPerson = new Person({
+    const newPerson = new FoundPerson({
       name: req.body.name,
       age: req.body.age,
       gender: req.body.gender,
@@ -62,7 +62,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 // DELETE person
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Person.findByIdAndDelete(req.params.id);
+    const deleted = await FoundPerson.findByIdAndDelete(req.params.id);
 
     if (!deleted) {
       return res.status(404).json({ message: "Person not found" });
@@ -87,7 +87,7 @@ router.get("/search", async (req, res) => {
 
     console.log("🔍 Searching for:", nameQuery);
 
-    const persons = await Person.find();
+    const persons = await FoundPerson.find();
 
     // Simple name matching (partial/contains)
     const matched = persons.filter((p) =>
@@ -121,7 +121,7 @@ router.get("/search", async (req, res) => {
 // GET single person by ID
 router.get("/:id", async (req, res) => {
   try {
-    const person = await Person.findById(req.params.id);
+    const person = await FoundPerson.findById(req.params.id);
 
     if (!person) {
       return res.status(404).json({ message: "Person not found" });
@@ -156,7 +156,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       updateData.image = req.file.filename;
     }
 
-    const updatedPerson = await Person.findByIdAndUpdate(
+    const updatedPerson = await FoundPerson.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true }

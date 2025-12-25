@@ -10,7 +10,7 @@ const RegisterPersonForm = () => {
   const formData = new FormData(e.target);
 
   try {
-  const response = await fetch(`${BASE_URL}/persons`, {
+  const response = await fetch(`${BASE_URL}/foundPersons`, {
       method: "POST",
       body: formData,
     });

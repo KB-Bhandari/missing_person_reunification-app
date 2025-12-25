@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 
 import familySearchRoutes from "./routes/familySearchRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
-import personRoutes from "./routes/personRoutes.js";
+import foundPerson from "./routes/foundPerson.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import campRoutes from "./routes/campRoutes.js";
 import familyRoutes from "./routes/familyRoutes.js";
@@ -36,7 +36,7 @@ mongoose
   .catch((err) => console.log("❌ MongoDB Error:", err));
 
 // ROUTES
-app.use("/api/persons", personRoutes);
+app.use("/api/foundPersons", foundPerson);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/family", familyRoutes);

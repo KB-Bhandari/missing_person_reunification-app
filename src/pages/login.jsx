@@ -37,6 +37,7 @@ const Login = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+          // credentials: "include", 
       });
 
       const data = await res.json();
@@ -47,13 +48,18 @@ const Login = () => {
         setLoading(false);
         return;
       }
-
-      // Store token and role
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userRole", userType);
-      
-      if (userType === "admin") {
-        localStorage.setItem("adminToken", data.token);
+if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", userType);
+        
+        if (userType === "admin") {
+          localStorage.setItem("adminToken", data.token);
+        }
+      } else {
+        console.error("Token missing in server response!");
+        setError("Invalid response from server. Please try again.");
+        setLoading(false);
+        return;
       }
 
       console.log("Stored - userRole:", localStorage.getItem("userRole"));

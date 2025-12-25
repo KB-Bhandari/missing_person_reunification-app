@@ -1,228 +1,274 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+
 
 const FamilyDashboard = () => {
   const [formData, setFormData] = useState({
   fullName: "",
   approximateAge: "",
+  gender: "",           // ✅ ADD THIS
   lastSeenLocation: "",
   dateLastSeen: "",
+  description: "",
   photo: null,
-  description: "", // added description
 });
 
 
   const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-  const [foundPerson, setFoundPerson] = useState(null);
-  const [searchResult, setSearchResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("register");
+  const [registeredPersons, setRegisteredPersons] = useState([]);
+ 
 
-  // INPUT HANDLER
+  // Fetch registered persons for current session automatically
+  useEffect(() => {
+    if (activeTab === "case") fetchRegisteredPersons();
+  }, [activeTab]);
+const fetchRegisteredPersons = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.get("http://localhost:5000/api/familySearch/my", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.data.success) {
+      setRegisteredPersons(res.data.familysearches); // already includes matches
+    } else {
+      setRegisteredPersons([]);
+    }
+  } catch (err) {
+    console.error(err);
+    setRegisteredPersons([]);
+  }
+};
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData(
-      name === "photo"
-        ? { ...formData, photo: files[0] }
-        : { ...formData, [name]: value }
-    );
+    if (name === "photo") {
+      setFormData({ ...formData, photo: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  // SAVE BY DETAILS
-  const handleSearchDetails = async () => {
-    if (!formData.photo) {
-      setErrorMsg("Please upload a photo before submitting details.");
+  const handleSubmit = async () => {
+    const { fullName, approximateAge, lastSeenLocation, dateLastSeen, description, photo } = formData;
+
+    if (!fullName || !approximateAge ||  !formData.gender || !lastSeenLocation || !dateLastSeen || !photo) {
+      setErrorMsg("All fields except Description are mandatory.");
       return;
     }
 
     try {
+      setLoading(true);
       setErrorMsg("");
-      setSuccessMsg("");
 
       const form = new FormData();
-      form.append("name", formData.name);
-      form.append("approxAge", formData.approxAge);
-      form.append("additionalDetails", formData.additionalDetails);
-      form.append("lastSeenLocation", formData.lastSeenLocation);
-      form.append("dateLastSeen", formData.dateLastSeen);
-      form.append("photo", formData.photo);
+      form.append("name", fullName);
+      form.append("approxAge", approximateAge);
+      form.append("gender", formData.gender);
+      form.append("lastSeenLocation", lastSeenLocation);
+      form.append("dateLastSeen", dateLastSeen);
+      form.append("description", description || "");
+      form.append("photo", photo);
+const token = localStorage.getItem("token");
 
-      const res = await axios.post(
-        "http://localhost:5000/api/familySearch/saveByDetails",
-        form
-      );
+const res = await axios.post(
+  "http://localhost:5000/api/familySearch/save",
+  form,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
+
 
       if (!res.data.success) {
-        setErrorMsg(res.data.message || "Something went wrong.");
+        setErrorMsg(res.data.message || "Submission failed.");
         return;
       }
 
-      setSuccessMsg("Details submitted successfully!");
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Server error while submitting details.");
-    }
-  };
-
-  // SAVE BY PHOTO ONLY
-  const handleSearchPhoto = async () => {
-    if (!formData.photo) {
-      setErrorMsg("Please upload a photo.");
-      return;
-    }
-
-    try {
-      setErrorMsg("");
-      setSearchResult("");
-
-      const form = new FormData();
-      form.append("photo", formData.photo);
-
-      const res = await axios.post(
-        "http://localhost:5000/api/familySearch/saveByPhoto",
-        form
-      );
-
-      if (!res.data.success) {
-        setErrorMsg(res.data.message || "Something went wrong.");
-        return;
-      }
-
-      const r = res.data.data;
-
-      setFoundPerson({
-        name: r?.name || "N/A",
-        approxAge: r?.approxAge || "N/A",
-        additional: r?.additionalDetails || "N/A",
-        lastSeen: r?.lastSeenLocation || "N/A",
-        dateRegistered: r?.dateLastSeen || "N/A",
-        caseId: r?._id,
-        photo: r?.photoPath ? `http://localhost:5000${r.photoPath}` : null,
+      // Reset form
+      setFormData({
+        fullName: "",
+        approximateAge: "",
+        gender: "",
+        lastSeenLocation: "",
+        dateLastSeen: "",
+        description: "",
+        photo: null,
       });
 
-      setSearchResult("Photo submitted successfully");
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Server error while submitting photo.");
+      // Refresh Case Management automatically
+      fetchRegisteredPersons();
+      alert("Missing person report submitted successfully!");
+      setActiveTab("case"); // switch to Case Management
+
+    } catch {
+      setErrorMsg("Server error. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
-
-      {/* Hero Section */}
-   {/* Hero Section */}
-<section
-  className="relative bg-cover bg-center text-white py-24"
-  style={{ 
-    backgroundImage: `url('https://images.unsplash.com/photo-1606788075761-7e3f146a16c7?auto=format&fit=crop&w=1470&q=80')` 
-  }}
->
-  <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-  <div className="relative z-10 text-center max-w-4xl mx-auto">
-    <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-      Reconnect with Your Loved Ones
-    </h1>
-    <p className="text-lg md:text-xl mb-6">
-      Search our database of missing persons and bring hope back to your family.
-    </p>
-    <button
-      onClick={() => window.scrollTo({ top: 600, behavior: "smooth" })}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
-    >
-      Start Searching
-    </button>
-  </div>
-</section>
-
-
-      {/* Search Section */}
-      <section className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto px-4 mt-10">
-
-        {/* Search by Details */}
-        <div className="flex-1 p-6 bg-white rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Search by Details</h2>
-          <input name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" className="w-full mb-3 p-2 border rounded-lg" />
-          <input name="approximateAge" value={formData.approximateAge} onChange={handleChange} placeholder="Approx. Age" className="w-full mb-3 p-2 border rounded-lg" />
-          <input name="lastSeenLocation" value={formData.lastSeenLocation} onChange={handleChange} placeholder="Last Seen Location" className="w-full mb-3 p-2 border rounded-lg" />
-          <input type="date" name="dateLastSeen" value={formData.dateLastSeen} onChange={handleChange} className="w-full mb-3 p-2 border rounded-lg" />
-          <textarea
-  name="description"
-  value={formData.description || ""}
-  onChange={handleChange}
-  placeholder="Description (clothes, marks, etc.)"
-  className="w-full mb-3 p-2 border rounded-lg resize-none h-24"
-></textarea>
-
-          <button onClick={handleSearchDetails} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mt-2">Search by Details</button>
+    <div className="min-h-screen flex flex-col bg-slate-100 text-slate-800">
+      {/* Header */}
+      <header className="w-full bg-sky-950 text-white py-10">
+        <div className="max-w-3xl mx-auto text-center px-4">
+          <h1 className="text-3xl font-semibold">Missing Person Reunification System</h1>
+          <p className="mt-2 text-white/80">
+            Official portal for submitting missing person details. All information is confidential.
+          </p>
         </div>
+      </header>
 
-        {/* Search by Photo */}
-        <div className="flex-1 p-6 bg-white rounded-xl shadow-md text-center">
-          <h2 className="text-xl font-semibold mb-4">Search by Photo</h2>
-          <div className="w-full h-64 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center mb-4 relative cursor-pointer">
-            <input
-              type="file"
-              name="photo"
-              onChange={handleChange}
-              className="absolute w-full h-full opacity-0 cursor-pointer"
-            />
-            {formData.photo ? (
-              <p>{formData.photo.name}</p>
-            ) : (
-              <p>Drag & Drop photo here or click to upload</p>
-            )}
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <aside className="w-64 bg-slate-900 text-white flex flex-col">
+          <div className="p-6 text-2xl font-bold border-b border-slate-700">
+            Dashboard
           </div>
+          <nav className="flex-1 p-4 space-y-2">
+            <button
+              className={`w-full text-left px-3 py-2 rounded ${activeTab === "register" ? "bg-slate-700" : "hover:bg-slate-700"}`}
+              onClick={() => setActiveTab("register")}
+            >
+              Register Person
+            </button>
+            <button
+              className={`w-full text-left px-3 py-2 rounded ${activeTab === "case" ? "bg-slate-700" : "hover:bg-slate-700"}`}
+              onClick={() => setActiveTab("case")}
+            >
+              Case Management
+            </button>
+          </nav>
+        </aside>
 
-          <button
-            onClick={handleSearchDetails}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mt-2"
-          >
-            Submit Details
-          </button>
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          {activeTab === "register" && (
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-semibold mb-6 text-center">Submit Missing Person Details</h2>
+              {errorMsg && <p className="text-sm text-red-600 mb-4">{errorMsg}</p>}
+              <div className="grid md:grid-cols-2 gap-6">
+                <Field label="Full Name">
+                  <input name="fullName" value={formData.fullName} onChange={handleChange} className="input" />
+                </Field>
+                <Field label="Approximate Age">
+                <input type="number" name="approximateAge" value={formData.approximateAge}  onChange={handleChange}className="input" min="0"
+/>
 
-          {/* PHOTO ONLY BUTTON BELOW DETAILS BUTTON */}
-          <button
-            onClick={handleSearchPhoto}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg mt-2"
-          >
-            Submit Photo Only
-          </button>
+                </Field>
+                <Field label="Gender">
+              <select name="gender" value={formData.gender} onChange={handleChange} required className="input">
+                        <option value="">Select Gender</option>
+                         <option value="male">Male</option>
+                         <option value="female">Female</option>
+                          <option value="other">Other</option></select></Field>
+                <Field label="Last Seen Location">
+                  <input name="lastSeenLocation" value={formData.lastSeenLocation} onChange={handleChange} className="input" />
+                </Field>
+                <Field label="Date Last Seen">
+                  <input type="date" name="dateLastSeen" value={formData.dateLastSeen} onChange={handleChange} className="input" />
+                </Field>
+                <Field label="Description">
+                  <textarea name="description" placeholder="Clothes, Height, other Description" value={formData.description} onChange={handleChange} className="input h-28 resize-none md:col-span-2" />
+                </Field>
+                <Field label="Photograph">
+                  <label className="block cursor-pointer w-full">
+                    <input type="file" name="photo" accept="image/*" onChange={handleChange} className="hidden" />
+                    <div className="px-4 py-2 border border-slate-300 rounded-md text-center hover:bg-slate-100 transition">
+                      {formData.photo ? "Change Photo" : "Upload Photo"}
+                    </div>
+                  </label>
+                  {formData.photo && <p className="text-xs text-slate-500 mt-1 text-center">Selected file: {formData.photo.name}</p>}
+                </Field>
+              </div>
+              <div className="flex justify-center mt-6">
+                <button onClick={handleSubmit} disabled={loading} className="px-6 py-2.5 bg-slate-900 text-white rounded-md hover:bg-slate-800 transition font-medium">
+                  {loading ? "Submitting…" : "Submit Report"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "case" && (
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-semibold mb-6">Case Management</h2>
+              {registeredPersons.length === 0 ? (
+                <p>No persons registered by you yet.</p>
+              ) : (
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                  {registeredPersons.map((person, idx) => (
+                    <div key={idx} className="p-4 border rounded-lg bg-slate-50 flex gap-4 items-center">
+                      <div>
+                        {person.photo &&<img
+  src={`http://localhost:5000/uploads/familySearch/${person.photo}`}
+  alt={person.name}
+  className="w-24 h-24 object-cover rounded"
+/>
+}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{person.name}</h3>
+                        <p><strong>Age:</strong> {person.approxAge}</p>
+                        <p><strong>Gender:</strong> {person.gender}</p>
+                        <p><strong>Last Seen:</strong> {person.lastSeenLocation}</p>
+                        <p><strong>Date:</strong> {new Date(person.dateLastSeen).toLocaleDateString()}</p>
+                        {person.description && <p><strong>Description:</strong> {person.description}</p>}
+                       {person.matches?.length > 0 && (
+        <div className="mt-2 p-2 border-t">
+          <h4 className="font-semibold">Possible Matches:</h4>
+          {person.matches.map((m, i) => (
+            <div key={i} className="flex gap-2 items-center mt-1">
+              {m.image && <img src={`http://localhost:5000/uploads/foundPersons/${m.image}`} className="w-16 h-16 rounded" />}
+              <div>
+                <p className="text-sm">{m.name}</p>
+                <p className="text-xs text-slate-500">Score: {m.score.toFixed(2)}</p>
+                <button className="px-2 py-1 bg-green-600 text-white text-xs rounded">Confirm Match</button>
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
-
-      {searchResult && (
-        <div className="max-w-7xl mx-auto px-4 mt-6 text-center">{searchResult}</div>
       )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
 
-      {foundPerson && (
-        <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-md flex flex-col md:flex-row gap-6">
-          <div className="flex-1 flex items-center justify-center">
-            {foundPerson.photo ? (
-              <img
-                src={foundPerson.photo}
-                alt="Person"
-                className="w-48 h-48 object-cover rounded-lg"
-              />
-            ) : (
-              <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">No Photo</div>
-            )}
-          </div>
-
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-4">Information</h2>
-            <ul className="space-y-2">
-              <li><b>Name:</b> {foundPerson.name}</li>
-              <li><b>Approx Age:</b> {foundPerson.approxAge}</li>
-              <li><b>Details:</b> {foundPerson.additional}</li>
-              <li><b>Last Seen:</b> {foundPerson.lastSeen}</li>
-              <li><b>Date Registered:</b> {foundPerson.dateRegistered}</li>
-              <li><b>Case ID:</b> {foundPerson.caseId}</li>
-            </ul>
-          </div>
-        </div>
-      )}
+      <style>
+        {`
+        .input {
+          width: 100%;
+          padding: 0.55rem 0.75rem;
+          border: 1px solid #cbd5f5;
+          border-radius: 0.375rem;
+          font-size: 0.9rem;
+        }
+        .input:focus {
+          outline: none;
+          border-color: #0f172a;
+          box-shadow: 0 0 0 1px #0f172a;
+        }
+        `}
+      </style>
     </div>
   );
 };
+
+const Field = ({ label, children }) => (
+  <div>
+    <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+    {children}
+  </div>
+);
 
 export default FamilyDashboard;
